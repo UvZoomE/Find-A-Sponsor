@@ -408,6 +408,7 @@ const Home = () => {
                   <div className="logout-container">
                     <a href="#" onClick={handleViewProfile}>View Profile</a>
                     <a href="#" onClick={handleViewingSponsees}>View Sponsees</a>
+                    <a href="#" onClick={handleSettings}>View Settings</a>
                     <a href="#" onClick={handleLogout}>Log out</a>
                   </div>
             }

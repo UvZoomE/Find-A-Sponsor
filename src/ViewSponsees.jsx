@@ -60,7 +60,7 @@ const ViewSponsees = () => {
                             {Object.values(realtimeUser.sponsees).map((sponsee) => (
                                 <div className="sponsee-info" key={sponsee.id}>
                                     <div className="first-row">
-                                        <img src={sponsee.photoURL200} alt="User profile"/>
+                                        <img src={sponsee.photoURL} alt="User profile" style={{height: "200px", width: "200px"}}/>
                                         <h5>{sponsee.firstname} {sponsee.lastInitial}.</h5>
                                     </div>
                                     <div className="second-row">
