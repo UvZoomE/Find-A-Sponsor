@@ -3,6 +3,7 @@ import SignIn from "./SignIn";
 import CreateAccount from "./CreateAccount";
 import UserModal from "./UserModal";
 import BuildProfile from "./BuildProfile";
+import ViewSettingsPage from "./ViewSettingsPage";
 
 import {
   StyleTwoTone,
@@ -51,6 +52,9 @@ export {avatarEditorContext};
 const viewSponseesContext = createContext();
 export{viewSponseesContext};
 
+const viewSettingsPageContext = createContext();
+export{viewSettingsPageContext};
+
 const Home = () => {
   const [alignment, setAlignment] = useState("sponsor");
   const [signIn, setSignIn] = useState(false);
@@ -68,6 +72,7 @@ const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [uid, setUid] = useState("");
   const [viewSponsees, setViewSponsees] = useState(false);
+  const [viewSettingsPage, setViewSettingsPage] = useState(false);
   
   useEffect(() => {
     const fetchCurrentUsers = async () => {
@@ -307,6 +312,12 @@ const Home = () => {
     setMenuVisible(false);
   }
 
+  const handleSettings = async(e) => {
+    e.preventDefault();
+    setViewSettingsPage(true);
+    setMenuVisible(false);
+  }
+
   return (
         <div className="home-container">
           <div className="left-child-container">
@@ -319,6 +330,7 @@ const Home = () => {
                 {menuVisible && 
                   <div className="logout-container">
                     <a href="#" onClick={handleViewProfile}>View Profile</a>
+                    <a href="#" onClick={handleSettings}>Settings</a>
                     <a href="#" onClick={handleLogout}>Log out</a>
                   </div>
                 }
@@ -508,7 +520,10 @@ const Home = () => {
         </userContext.Provider> : viewSponsees ?
         <viewSponseesContext.Provider value={{realtimeUser, setViewSponsees, setRealtimeUser, uid}}>
           <ViewSponsees />
-        </viewSponseesContext.Provider> : ""}
+        </viewSponseesContext.Provider> : viewSettingsPage ?
+        <viewSettingsPageContext.Provider value={{setViewSettingsPage, viewSettingsPage}}>
+          <ViewSettingsPage />
+        </viewSettingsPageContext.Provider> : ""}
         </div>
   );
 };
