@@ -1,0 +1,72 @@
+.view-sponsees-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* ensure it's above other content */
+}
+
+.view-sponsees-box-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* add a shadow for depth */
+    max-height: 70vh;
+    overflow-y: auto; /* enable vertical scrolling if content exceeds max height */
+}
+
+.view-sponsees-icons-container {
+    margin-left: auto;
+}
+  
+  .sponsee-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .sponsee-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .first-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .second-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .third-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .cancel-sponsee-button {
+    margin-right: auto;
+  }
+  
+  .view-sponsees-no-sponsees-message {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #666;
+  }
+  

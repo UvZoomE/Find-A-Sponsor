@@ -1,0 +1,55 @@
+.message-someone-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* ensure it's above other content */
+}
+
+.icons-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.horizontal-line {
+    width: 100%;
+}
+
+.message-outbox-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* add a shadow for depth */
+    max-height: 70vh;
+    overflow-y: auto; /* enable vertical scrolling if content exceeds max height */
+}
+
+.message-template-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.to-someone-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.from-myself-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-body-container {
+    display: flex;
+    flex-direction: column;
+}
