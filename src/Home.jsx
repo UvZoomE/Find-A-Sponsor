@@ -351,7 +351,7 @@ const Home = () => {
               Object.values(realtimeUser.sponsees).map((user, index) => (
             <div className="sponsee-info" key={user.id}>
               <div className="first-row">
-                <img src={user.photoURL} alt="User profile"/>
+                <img src={user.photoURL} alt="User profile" style={{height: "200px", width: "200px"}}/>
               </div>
               <div className="second-row">
                 <h5>{user.firstname} {user.lastInitial}. sober since {user.sobrietyDate}</h5>
