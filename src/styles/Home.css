@@ -7,11 +7,6 @@ body {
   margin: 0;
 }
 
-.my-swiper{
-  width: 400px;
-  height: auto;
-}
-
 .swiper-slide {
   display: flex;
   flex-direction: column;
@@ -202,6 +197,10 @@ body {
   display: none;
 }
 
+.settings-link-mobile {
+  display: none;
+}
+
 .toggle-buttons {
   display: flex;
   justify-content: center;
@@ -210,6 +209,12 @@ body {
 
 .sponsor-sponsee-buttons {
   margin: 10px;
+}
+
+.sponsor-sponsee-buttons-signed-in {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .swipe-container {
@@ -312,12 +317,19 @@ body {
     height: 250px;
   }
 
+  .toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .sign-in-link-mobile {
     display: unset !important;
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    margin-right: 10px;
+    margin: 10px;
+  }
+
+  .settings-link-mobile {
+    display: unset !important;
+    margin: 10px;
   }
 
   .profile-header-mobile {
@@ -344,4 +356,11 @@ body {
     object-fit: cover; /* ensure the image covers the container */
   }
 
+}
+
+@media only screen and (max-width: 462) {
+  .sign-in-link-mobile {
+    position: static;
+    margin-right: 20px;
+  }
 }

@@ -73,6 +73,21 @@ const Home = () => {
   const [uid, setUid] = useState("");
   const [viewSponsees, setViewSponsees] = useState(false);
   const [viewSettingsPage, setViewSettingsPage] = useState(false);
+  const screenWidth = window.innerWidth;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup function to remove the event listener when component unmounts
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // Empty dependency array means this effect runs only once after initial render
   
   useEffect(() => {
     const fetchCurrentUsers = async () => {
@@ -204,8 +219,24 @@ const Home = () => {
       fetchAllUsers();
     }
   }, [realtimeUser]);
-  
-  
+
+  useEffect(() => {
+    // Add event listener when component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+    // Cleanup function to remove event listener when component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleClickOutside = (event) => {
+    if (menuVisible && !event.target.closest('.profile-image')) {
+      // If sign-in modal is open and the click occurred outside the modal container, close the modal
+      setMenuVisible(false);
+    }
+  };
+
+
 
   const handleChange = (event, newAlignment) => {
     event.preventDefault();
@@ -237,9 +268,11 @@ const Home = () => {
   const handleSwiperClick = (e) => {
     if (!realtimeUser?.sponsor || alignment == "sponsee"){
       setClickedUser(users[currentIndex]);
+      setMenuVisible(false);
       setModalOpen(true);
     } else {
       setClickedUser(realtimeUser?.sponsor);
+      setMenuVisible(false);
       setModalOpen(true);
     }
   }
@@ -318,6 +351,9 @@ const Home = () => {
     setMenuVisible(false);
   }
 
+    // Define the width for the image based on the windowWidth state
+    const imageWidth = windowWidth > 962 ? 400 : windowWidth <= 962 && windowWidth > 810 ? 300 : windowWidth <= 810 && windowWidth > 400 ? 230 : 200;
+
   return (
         <div className="home-container">
           <div className="left-child-container">
@@ -351,7 +387,7 @@ const Home = () => {
                 {realtimeUser ? 
                 <h5>Start liking to find a sponsor/sponsee!</h5> :
                 <h5 className="unlock-subtext">
-                  Sign in to find a sponsor or sponsee!
+                  Sign in to find a sponsor!
                 </h5>}
               </div>
             </div>
@@ -391,7 +427,7 @@ const Home = () => {
             ) : (
               <div className="person-message-and-icon">
                 <PersonTwoTone fontSize="large"/>
-                <h5 className="sign-in-warning-message">Sponsees will appear here once you match with them!</h5>
+                <h5 className="sign-in-warning-message">Sign in to chat with sponsees</h5>
                 <h5 className="sign-in-warning-message-mobile">Chat with sponsees!</h5>
               </div>
             )}
@@ -400,6 +436,7 @@ const Home = () => {
           </div>
           <div className="right-child-container">
           {realtimeUser ? 
+          <>
             <div className="profile-header-mobile">
             <div className="profile-image-container-mobile">
               <img className="profile-image-mobile" src={realtimeUser.photoURL} alt="Profile" onClick={handleMenuItem}/>
@@ -408,19 +445,32 @@ const Home = () => {
                   <div className="logout-container">
                     <a href="#" onClick={handleViewProfile}>View Profile</a>
                     <a href="#" onClick={handleViewingSponsees}>View Sponsees</a>
-                    <a href="#" onClick={handleSettings}>View Settings</a>
+                    <a href="#" onClick={handleSettings}>Settings</a>
                     <a href="#" onClick={handleLogout}>Log out</a>
                   </div>
             }
             <h3>@{realtimeUser.username}</h3>
-            </div>: <a
+            </div>
+            <ToggleButtonGroup
+              value={alignment}
+              color="primary"
+              exclusive
+              aria-label="group"
+              onChange={handleChange}
+              className="sponsor-sponsee-buttons-signed-in"
+            >
+              <ToggleButton value="sponsor">Sponsors</ToggleButton>
+              <ToggleButton value="sponsee">Sponsees</ToggleButton>
+            </ToggleButtonGroup>
+            </>: 
+            <div className="toggle-buttons">
+              <a
                 className="sign-in-link-mobile"
                 href="/sign-in"
                 onClick={handleSignIn}
               >
                 Sign In
-              </a>}
-            <div className="toggle-buttons">
+              </a>
               <ToggleButtonGroup
                 value={alignment}
                 color="primary"
@@ -432,7 +482,14 @@ const Home = () => {
                 <ToggleButton value="sponsor">Sponsors</ToggleButton>
                 <ToggleButton value="sponsee">Sponsees</ToggleButton>
               </ToggleButtonGroup>
-            </div>
+              <a
+                className="settings-link-mobile"
+                href="#"
+                onClick={handleSettings}
+              >
+                Settings
+              </a>
+            </div>}
             <Swiper
             effect={'cards'}
             modules={[EffectCards, Navigation, Pagination, Scrollbar, A11y]}
@@ -440,6 +497,7 @@ const Home = () => {
             pagination={true}
             grabCursor={true}
             className="my-swiper"
+            style={{width: imageWidth, height: "auto"}}
             onClick={handleSwiperClick}
             onSlideChange={(swiper) => {
               setCurrentIndex(swiper.activeIndex);
@@ -447,13 +505,13 @@ const Home = () => {
             >
               {realtimeUser?.sponsor && alignment == "sponsor" ? (
                 <SwiperSlide className="swiper-slide">
-                  <img src={realtimeUser.sponsor.photoURL}/>
+                  <img style={{width: imageWidth, height: imageWidth}} src={realtimeUser.sponsor.photoURL}/>
                   <h3>{realtimeUser.sponsor.firstname} {realtimeUser.sponsor.lastInitial}. sober since {realtimeUser.sponsor.sobrietyDate}</h3>
                 </SwiperSlide>
               ) : users.length > 0 ? (
                 users.map((user, index) => (
                   <SwiperSlide key={index} className="swiper-slide">
-                    <img src={user.photoURL} />
+                    <img style={{width: imageWidth, height: imageWidth}} src={user.photoURL} />
                     <h3>{user.firstname} {user.lastInitial}. sober since {user.sobrietyDate}</h3>
                   </SwiperSlide>
                 ))
