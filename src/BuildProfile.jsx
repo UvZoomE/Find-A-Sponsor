@@ -48,6 +48,7 @@ const BuildProfile = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         const storageRef = sRef(storage, `images/${user.displayName}`);
+        await uploadString(storageRef, imageURL, 'data_url');
         const imageDownloadURL = await getDownloadURL(storageRef);
         setLoading(true);
 
