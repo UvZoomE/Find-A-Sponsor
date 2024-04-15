@@ -255,6 +255,11 @@ body {
   fill: "gray" !important;
 }
 
+.create-account-footer-link {
+  display: flex;
+  justify-content: center;
+}
+
 .profile-image-mobile {
   display: none;
 }
