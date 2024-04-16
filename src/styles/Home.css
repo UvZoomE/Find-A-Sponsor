@@ -247,7 +247,7 @@ body {
 .swipe-icons {
   display: flex;
   justify-content: space-around;
-  margin-bottom: auto;
+  margin-bottom: 20px;
 }
 
 .disabled-button {
