@@ -35,7 +35,7 @@ const ViewSettingsPage = () => {
             <CloseTwoTone fontSize="large" className="view-settings-container-close-icon" onClick={() => setViewSettingsPage(false)}/>
               <hr className="horizontal-line"/>
               <h3>Found any bugs, want to request new features or want to help code this project?</h3>
-                <h3>Contact our team at longhorns2102@gmail.com</h3>
+                <h3>Contact our team at admin@findasponsor.app</h3>
               <h4>PS: Dark mode is coming soon!</h4>
           </div>
         </div> ) : ""}
