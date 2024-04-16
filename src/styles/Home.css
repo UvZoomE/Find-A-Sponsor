@@ -181,7 +181,6 @@ body {
   display: flex;
   flex-grow: 3;
   flex-direction: column;
-  margin-bottom: 3vh;
   flex-shrink: 1;
   gap: 20px;
 }
