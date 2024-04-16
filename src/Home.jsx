@@ -563,9 +563,9 @@ const Home = () => {
                 </IconButton>
               </Tooltip>
             </div> : ""}
-            <div className="create-account-footer-link">
+            {realtimeUser ? "" : <div className="create-account-footer-link">
                 <h4><a href="#" onClick={(e) => setCreateAccount(true)}>Create an account</a> to find a sponsor or sponsees!</h4>
-            </div>
+            </div>}
           </div>
         { signIn ?
         <signInContext.Provider value={{setUser, setSignIn, signIn, setCreateAccount, setRealtimeUser, setMenuVisible, setUid}}>
