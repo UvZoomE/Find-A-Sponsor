@@ -15,10 +15,13 @@ import {
   Tooltip,
   Fade,
 } from "@mui/material";
+import { child, get, getDatabase, ref, update } from "firebase/database";
 
 const UserModal = () => {
+  const database = getDatabase();
     const contextValue = useContext(modalContext);
-    const { modalOpen, setModalOpen, clickedUser, realtimeUser } = contextValue;
+    const { modalOpen, setModalOpen, clickedUser, realtimeUser, users, currentIndex, setUsers, setCurrentLikedUser, setCongrats, setCreateAccount,
+    alignment, uid, setRealtimeUser } = contextValue;
 
     useEffect(() => {
       // Add event listener when component mounts
@@ -35,6 +38,57 @@ const UserModal = () => {
         setModalOpen(false);
       }
     };
+
+    const handleTempDislike = async(e) => {
+      e.preventDefault();
+      const currentUser = users[currentIndex];
+      const newUsers = users.filter(user => user.username != currentUser.username);
+      setUsers(newUsers);
+    }
+  
+    const handleTempLike = async(e) => {
+      e.preventDefault();
+      const currentUser = users[currentIndex];
+      setCurrentLikedUser(currentUser);
+      setCongrats(true);
+      setCreateAccount(true);
+    }
+
+    const handleLike = async(e) => {
+      e.preventDefault();
+      const usersRef = ref(database);
+      const currentUser = users[currentIndex];
+      if (alignment == "sponsor") {
+        await update(child(usersRef, "users/" + uid), {
+          likedSponsors: { ...realtimeUser.likedSponsors, [currentUser.username]: true},
+        });
+      } else {
+        await update(child(usersRef, "users/" + uid), {
+          likedSponsees: { ...realtimeUser.likedSponsees, [currentUser.username]: true},
+        });
+      }
+      const specificUser = await get(child(usersRef, "users/" + uid));
+      setRealtimeUser(specificUser.val());
+    }
+
+    const handleDislike = async(e) => {
+      e.preventDefault();
+      const usersRef = ref(database);
+      const currentUser = users[currentIndex];
+      if (alignment == "sponsor") {
+        await update(child(usersRef, "users/" + uid), {
+          dislikedSponsors: { ...realtimeUser.dislikedSponsors, [currentUser.username]: true},
+        });
+      } else {
+        await update(child(usersRef, "users/" + uid), {
+          dislikedSponsees: { ...realtimeUser.dislikedSponsees, [currentUser.username]: true},
+        });
+      }
+      const specificUser = await get(child(usersRef, "users/" + uid));
+      setRealtimeUser(specificUser.val());
+    }
+
+
 
     return (
         <>
@@ -63,17 +117,8 @@ const UserModal = () => {
                 placement="top"
                 TransitionComponent={Fade}
                 >
-                  <IconButton disabled={!realtimeUser}>
-                    <ThumbDownTwoTone fontSize="large" color={realtimeUser ? "primary" : "disabled"}/>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip
-                title="Send a message request to this person"
-                placement="top"
-                TransitionComponent={Fade}
-                >
-                  <IconButton disabled={!realtimeUser}>
-                    <MessageTwoTone fontSize="large" color={realtimeUser ? "primary" : "disabled"}/>
+                  <IconButton onClick={(e) => realtimeUser ? handleDislike(e) : handleTempDislike(e)}>
+                    <ThumbDownTwoTone fontSize="large" color={"primary"}/>
                   </IconButton>
                 </Tooltip>
                 <Tooltip
@@ -81,8 +126,8 @@ const UserModal = () => {
                 placement="top"
                 TransitionComponent={Fade}
                 >
-                  <IconButton disabled={!realtimeUser}>
-                    <ThumbUpTwoTone fontSize="large" color={realtimeUser ? "primary" : "disabled"}/>
+                  <IconButton onClick={(e) => realtimeUser ? handleLike(e) : handleTempLike(e)}>
+                    <ThumbUpTwoTone fontSize="large" color={"primary"}/>
                   </IconButton>
                 </Tooltip>
               </div>}

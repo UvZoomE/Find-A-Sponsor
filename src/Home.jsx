@@ -33,6 +33,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { child, get, getDatabase, ref, remove, update } from "firebase/database";
 import WhatsAppButton from "./SmallButton.png"
 import ViewSponsees from "./ViewSponsees";
+import CongratsModal from "./CongratsModal";
 
 const signInContext = createContext();
 export {signInContext};
@@ -55,6 +56,9 @@ export{viewSponseesContext};
 const viewSettingsPageContext = createContext();
 export{viewSettingsPageContext};
 
+const congratsModalContext = createContext();
+export{congratsModalContext};
+
 const Home = () => {
   const [alignment, setAlignment] = useState("sponsor");
   const [signIn, setSignIn] = useState(false);
@@ -73,8 +77,13 @@ const Home = () => {
   const [uid, setUid] = useState("");
   const [viewSponsees, setViewSponsees] = useState(false);
   const [viewSettingsPage, setViewSettingsPage] = useState(false);
-  const screenWidth = window.innerWidth;
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [congrats, setCongrats] = useState(false);
+  const [currentLikedUser, setCurrentLikedUser] = useState(null);
+
+  console.log(realtimeUser);
+
+  console.log(alignment);
 
   useEffect(() => {
     const handleResize = () => {
@@ -351,6 +360,21 @@ const Home = () => {
     setMenuVisible(false);
   }
 
+  const handleTempDislike = async(e) => {
+    e.preventDefault();
+    const currentUser = users[currentIndex];
+    const newUsers = users.filter(user => user.username != currentUser.username);
+    setUsers(newUsers);
+  }
+
+  const handleTempLike = async(e) => {
+    e.preventDefault();
+    const currentUser = users[currentIndex];
+    setCurrentLikedUser(currentUser);
+    setCongrats(true);
+    setCreateAccount(true);
+  }
+
     // Define the width for the image based on the windowWidth state
     const imageWidth = windowWidth > 962 ? 400 : windowWidth <= 962 && windowWidth > 810 ? 300 : windowWidth <= 810 && windowWidth > 400 ? 230 : 200;
 
@@ -508,14 +532,22 @@ const Home = () => {
                   <img style={{width: imageWidth, height: imageWidth}} src={realtimeUser.sponsor.photoURL}/>
                   <h3>{realtimeUser.sponsor.firstname} {realtimeUser.sponsor.lastInitial}. sober since {realtimeUser.sponsor.sobrietyDate}</h3>
                 </SwiperSlide>
-              ) : users.length > 0 ? (
+              ) : !realtimeUser && alignment == "sponsee" ? 
+              <SwiperSlide>
+                <div className="no-more-users-container">
+                <div className="no-more-users-message">
+                  <p>Create an account to view sponsees and become a sponsor for those in need today!</p>
+                  <button className="no-more-users-create-account-button" onClick={() => setCreateAccount(true)}>Create Account</button>
+                </div>
+              </div>
+              </SwiperSlide> : users.length > 0 ? (
                 users.map((user, index) => (
                   <SwiperSlide key={index} className="swiper-slide">
                     <img style={{width: imageWidth, height: imageWidth}} src={user.photoURL} />
                     <h3>{user.firstname} {user.lastInitial}. sober since {user.sobrietyDate}</h3>
                   </SwiperSlide>
                 ))
-              ) : (
+              ) : realtimeUser ? (
                 <SwiperSlide>
                 <div className="no-more-users-container">
                 <div className="no-more-users-message">
@@ -524,7 +556,15 @@ const Home = () => {
                 </div>
               </div>
               </SwiperSlide>
-              )}
+              ) :
+              <SwiperSlide>
+                <div className="no-more-users-container">
+                  <div className="no-more-users-message">
+                    <p>Create an account to view more users</p>
+                    <button className="no-more-users-create-account-button" onClick={() => setCreateAccount(true)}>Create Account</button>
+                  </div>
+                </div>
+                </SwiperSlide>}
 
       </Swiper>
       {users.length > 0 ? <input type="button" value="View Profile" onClick={() => handleSwiperClick(currentIndex)} className="view-profile-button"/> : ""}
@@ -549,8 +589,8 @@ const Home = () => {
                 placement="top"
                 TransitionComponent={Fade}
               >
-                <IconButton disabled={!realtimeUser} onClick={(e) => handleDislike(e)}>
-                  <ThumbDownTwoTone fontSize="large" color={realtimeUser ? "primary" : "disabled"}/>
+                <IconButton onClick={(e) => {!realtimeUser ? handleTempDislike(e) : handleDislike(e)}}>
+                  <ThumbDownTwoTone fontSize="large" color={"primary"}/>
                 </IconButton>
               </Tooltip>
               <Tooltip
@@ -558,8 +598,8 @@ const Home = () => {
                 placement="top"
                 TransitionComponent={Fade}
               >
-                <IconButton disabled={!realtimeUser} onClick={(e) => handleLike(e)}>
-                  <ThumbUpTwoTone fontSize="large" color={realtimeUser ? "primary" : "disabled"}/>
+                <IconButton onClick={(e) => {!realtimeUser ? handleTempLike(e) : handleLike(e)}}>
+                  <ThumbUpTwoTone fontSize="large" color={"primary"}/>
                 </IconButton>
               </Tooltip>
             </div> : ""}
@@ -570,11 +610,15 @@ const Home = () => {
         { signIn ?
         <signInContext.Provider value={{setUser, setSignIn, signIn, setCreateAccount, setRealtimeUser, setMenuVisible, setUid}}>
           <SignIn/>
-        </signInContext.Provider> : createAccount ?
-        <createAccountContext.Provider value={{setCreateAccount, createAccount, setSignIn}}>
+        </signInContext.Provider> : congrats ?
+        <congratsModalContext.Provider value={{congrats, setCongrats, setCreateAccount, currentLikedUser, alignment}}>
+          <CongratsModal />
+        </congratsModalContext.Provider> : createAccount ?
+        <createAccountContext.Provider value={{setCreateAccount, createAccount, setSignIn, currentLikedUser, alignment}}>
           <CreateAccount />
         </createAccountContext.Provider> : modalOpen ? 
-        <modalContext.Provider value={{modalOpen, setModalOpen, clickedUser, realtimeUser}}>
+        <modalContext.Provider value={{modalOpen, setModalOpen, clickedUser, realtimeUser, users, currentIndex, setUsers, setCurrentLikedUser, setCongrats, setCreateAccount,
+        alignment, uid, setRealtimeUser}}>
           <UserModal />
         </modalContext.Provider> : user ?
         <userContext.Provider value={{user, setUser, setSignIn, image, setImage, setAvatarEditor, avatarEditor, setMenuVisible}}>

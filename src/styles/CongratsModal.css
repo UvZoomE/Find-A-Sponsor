@@ -1,0 +1,60 @@
+.congrats-message-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* ensure it's above other content */
+  }
+  
+  .congrats-message-box-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* add a shadow for depth */
+  }
+  
+  .congrats-direct-message {
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center; /* Center-align the message */
+    color: #333; /* Darken the text color */
+  }
+  
+  .currently-liked-user {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 20px auto;
+    border: 5px solid #fff; /* Add a border around the image */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow for depth */
+  }
+  
+  .congrats-message-box-container h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #555; /* Adjust text color */
+  }
+  
+  .congrats-message-box-container button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px; /* Increase border radius for a rounded button */
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Add a smooth transition on hover */
+  }
+  
+  .congrats-message-box-container button:hover {
+    background-color: #0056b3; /* Darken the button color on hover */
+  }

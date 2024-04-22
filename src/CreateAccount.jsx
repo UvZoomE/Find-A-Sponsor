@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createAccountContext } from "./Home";
 import { useContext } from "react";
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
-import { child, get, getDatabase, ref, set} from "firebase/database";
+import { child, get, getDatabase, ref, set, update} from "firebase/database";
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input'
 
@@ -23,7 +23,7 @@ const CreateAccount = () => {
     const [usernameTrigger, setUsernameTrigger] = useState(false);
     const [invalidEmail, setInvalidEmail] = useState(false);
     const accountContextValue = useContext(createAccountContext);
-    const {setCreateAccount, createAccount, setSignIn} = accountContextValue;
+    const {setCreateAccount, createAccount, setSignIn, currentLikedUser, alignment} = accountContextValue;
     const auth = getAuth();
     const database = getDatabase();
 
@@ -75,19 +75,44 @@ const CreateAccount = () => {
             const userCredential = await createUserWithEmailAndPassword(auth, emailAddress, password);
             const user = userCredential.user;
 
-            // Once you implement the server side of the application then proceed to determine if usernames are unique...
+            if (currentLikedUser) {
+                const otherUser = Object.entries(allUsers.val()).filter(([key, value]) => value.username == currentLikedUser.username);
+                const otherUserUID = Object.values(otherUser[0])[0];
+                const otherUserInformation = Object.values(otherUser[0])[1];
+                if (alignment == "sponsor") {
+                    await set(ref(database, 'users/' + user.uid), { // Use ref and set from the database object
+                        firstname: firstname,
+                        lastInitial: lastInitial,
+                        emailAddress: emailAddress,
+                        username: username,
+                        programOfChoice: programOfChoice,
+                        sobrietyDate: selectedDate,
+                        phoneNumber: phoneNumber,
+                        sponsor: currentLikedUser
+                        // Add more user data as needed
+                    });
 
-            // Store user in realtime database first to check if username already exists, if it does then throw an error
-            await set(ref(database, 'users/' + user.uid), { // Use ref and set from the database object
-                firstname: firstname,
-                lastInitial: lastInitial,
-                emailAddress: emailAddress,
-                username: username,
-                programOfChoice: programOfChoice,
-                sobrietyDate: selectedDate,
-                phoneNumber: phoneNumber,
-                // Add more user data as needed
-            });
+                    const newUser = await get(ref(database, "users/" + user.uid));
+
+                    await update(ref(database, "users/" + otherUserUID), {
+                        likedSponsees: {...otherUserInformation.sponsees, [username]: newUser.val()},
+                        sponsees: {...otherUserInformation.sponsees, [username]: newUser.val()} ,
+                    });
+
+                } else {
+                    // Store user in realtime database first to check if username already exists, if it does then throw an error
+                    await set(ref(database, 'users/' + user.uid), { // Use ref and set from the database object
+                        firstname: firstname,
+                        lastInitial: lastInitial,
+                        emailAddress: emailAddress,
+                        username: username,
+                        programOfChoice: programOfChoice,
+                        sobrietyDate: selectedDate,
+                        phoneNumber: phoneNumber,
+                        // Add more user data as needed
+                    });
+                }
+            }
 
             // Update user profile with additional information
             await updateProfile(user, {
@@ -133,7 +158,7 @@ const CreateAccount = () => {
 
     return (
         <>
-        {createAccount ? 
+        {createAccount &&
         <div className="create-account-container">
             <div className="create-account-box-container">
                 <CloseTwoTone className="create-account-container-close-icon" onClick={(e) => handleCreateAccount(e)}/>
@@ -181,7 +206,7 @@ const CreateAccount = () => {
                     setSignIn(true)
                     setCreateAccount(false)}}>Sign In</a></h3>
             </div>
-        </div> : ""}
+        </div>}
         </>
     )
 }

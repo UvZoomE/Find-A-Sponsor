@@ -7,7 +7,7 @@ import { userContext } from "./Home";
 import { ArrowBackTwoTone, CloseTwoTone, Rotate90DegreesCcw } from "@mui/icons-material";
 import AvatarEditor from "react-avatar-editor";
 
-import { getDatabase, ref, update } from "firebase/database";
+import { get, getDatabase, ref, update } from "firebase/database";
 import { getDownloadURL, getStorage, ref as sRef } from "firebase/storage";
 
 import { useState } from "react";
@@ -70,6 +70,24 @@ const BuildProfile = () => {
                 minimalProfileBuilt: true,
                 // Add more user data as needed
             });
+
+            const allUsers = await get(ref(database, "users/"));
+
+            console.log(allUsers.val());
+
+            const currentUser = Object.values(allUsers.val()).filter(userEl => userEl.username == user.displayName);
+
+            Object.entries(allUsers.val()).forEach(async ([key, el]) => {
+                const usersDisplayname = user.displayName;
+                if ("sponsees" in el && usersDisplayname in el.sponsees && !el.sponsees[usersDisplayname].photoURL) {
+                    await update(ref(database, "users/" + key), {
+                        sponsees: {...el.sponsees, [user.displayName]: currentUser[0]},
+                    });
+                }
+            })
+
+            // Come back here and update the sponsee list of whomever this user has been a sponsee of, consider adding a random image for the user when they first
+            // create their account so at least an image is available at minimum.
 
             setUser("");
             setMenuVisible(false);

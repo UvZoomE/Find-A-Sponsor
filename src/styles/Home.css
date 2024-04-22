@@ -238,6 +238,21 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.no-more-users-create-account-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px; /* Increase border radius for a rounded button */
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Add a smooth transition on hover */
+}
+
+.no-more-users-create-account-button:hover {
+  background-color: #0056b3; /* Darken the button color on hover */
+}
+
 .view-profile-button {
   margin-right: auto;
   margin-left: auto;

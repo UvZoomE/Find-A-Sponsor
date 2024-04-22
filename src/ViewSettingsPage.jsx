@@ -34,8 +34,8 @@ const ViewSettingsPage = () => {
           <div className="view-settings-box-container">
             <CloseTwoTone fontSize="large" className="view-settings-container-close-icon" onClick={() => setViewSettingsPage(false)}/>
               <hr className="horizontal-line"/>
-              <h3>Found any bugs, want to request new features or want to help code this project?</h3>
-                <h3>Contact our team at admin@findasponsor.app</h3>
+              <h3>Found Bugs? Report them <a target="_blank" href="https://github.com/UvZoomE/find-a-sponsor/issues/new">here</a></h3>
+              <h3>Want to request new features or want to help code this project? <br/> Email the team <a target="_blank" href="mailto:admin@findasponsor.app">here</a></h3>
               <h4>PS: Dark mode is coming soon!</h4>
           </div>
         </div> ) : ""}
