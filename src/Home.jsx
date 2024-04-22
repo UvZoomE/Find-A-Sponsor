@@ -81,10 +81,6 @@ const Home = () => {
   const [congrats, setCongrats] = useState(false);
   const [currentLikedUser, setCurrentLikedUser] = useState(null);
 
-  console.log(realtimeUser);
-
-  console.log(alignment);
-
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -275,14 +271,22 @@ const Home = () => {
   }
 
   const handleSwiperClick = (e) => {
-    if (!realtimeUser?.sponsor || alignment == "sponsee"){
-      setClickedUser(users[currentIndex]);
-      setMenuVisible(false);
-      setModalOpen(true);
+    if (realtimeUser) {
+      if (!realtimeUser?.sponsor || alignment == "sponsee"){
+        setClickedUser(users[currentIndex]);
+        setMenuVisible(false);
+        setModalOpen(true);
+      } else {
+        setClickedUser(realtimeUser?.sponsor);
+        setMenuVisible(false);
+        setModalOpen(true);
+      }
     } else {
-      setClickedUser(realtimeUser?.sponsor);
-      setMenuVisible(false);
-      setModalOpen(true);
+      if (alignment == "sponsor" && users.length > 0) {
+        setClickedUser(users[currentIndex]);
+        setMenuVisible(false);
+        setModalOpen(true);
+      }
     }
   }
 

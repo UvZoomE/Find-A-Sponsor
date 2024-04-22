@@ -73,8 +73,6 @@ const BuildProfile = () => {
 
             const allUsers = await get(ref(database, "users/"));
 
-            console.log(allUsers.val());
-
             const currentUser = Object.values(allUsers.val()).filter(userEl => userEl.username == user.displayName);
 
             Object.entries(allUsers.val()).forEach(async ([key, el]) => {
