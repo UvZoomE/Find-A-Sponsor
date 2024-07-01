@@ -34,6 +34,7 @@ import { child, get, getDatabase, ref, remove, update } from "firebase/database"
 import WhatsAppButton from "./SmallButton.png"
 import ViewSponsees from "./ViewSponsees";
 import CongratsModal from "./CongratsModal";
+import MessageModal from "./MessageModal";
 
 const signInContext = createContext();
 export {signInContext};
@@ -59,6 +60,9 @@ export{viewSettingsPageContext};
 const congratsModalContext = createContext();
 export{congratsModalContext};
 
+const messageModalContext = createContext();
+export{messageModalContext};
+
 const Home = () => {
   const [alignment, setAlignment] = useState("sponsor");
   const [signIn, setSignIn] = useState(false);
@@ -80,6 +84,8 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [congrats, setCongrats] = useState(false);
   const [currentLikedUser, setCurrentLikedUser] = useState(null);
+  const [messageModal, setMessageModal] = useState(false);
+  const [userToMessage, setUserToMessage] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -382,6 +388,12 @@ const Home = () => {
     // Define the width for the image based on the windowWidth state
     const imageWidth = windowWidth > 962 ? 400 : windowWidth <= 962 && windowWidth > 810 ? 300 : windowWidth <= 810 && windowWidth > 400 ? 230 : 200;
 
+  const handleMessageUser = async(e, user) => {
+    e.preventDefault();
+    setMessageModal(true);
+    setUserToMessage(user);
+  }
+
   return (
         <div className="home-container">
           <div className="left-child-container">
@@ -426,28 +438,11 @@ const Home = () => {
             {realtimeUser?.sponsees && Object.values(realtimeUser?.sponsees).length > 0 ? (
               Object.values(realtimeUser.sponsees).map((user, index) => (
             <div className="sponsee-info" key={user.id}>
-              <div className="first-row">
-                <img src={user.photoURL} alt="User profile" style={{height: "200px", width: "200px"}}/>
-              </div>
-              <div className="second-row">
-                <h5>{user.firstname} {user.lastInitial}. sober since {user.sobrietyDate}</h5>
-              </div>
-              <div className="third-row">
-                <div className="cancel-sponsee-button">
-                <Tooltip
-                title="Hit to remove this sponsee"
-                placement="top"
-                TransitionComponent={Fade}
-                >
-                  <IconButton onClick={(e) => handleCancel(e, user)}>
-                    <CancelTwoTone fontSize="large" color="warning"/>
-                  </IconButton>
-                </Tooltip>
-                </div>
-                <div className="chat-whatsapp-button">
-                <a aria-label="Chat on WhatsApp" href={"https://wa.me/" + user.phoneNumber}>
-                  <img className="whatsapp-icon" alt="Chat on WhatsApp" src={WhatsAppButton} />
-                </a> 
+              <div className="first-row" onClick={(e) => handleMessageUser(e, user)}>
+                <img src={user.photoURL} alt="User profile"/>
+                <div className="messages-user-info">
+                  <h5>{user.firstname} {user.lastInitial}</h5>
+                  <h3 style={{color: "gray"}}>Click here to send a message to {user.firstname} {user.lastInitial}!</h3>
                 </div>
               </div>
             </div>
@@ -455,7 +450,7 @@ const Home = () => {
             ) : (
               <div className="person-message-and-icon">
                 <PersonTwoTone fontSize="large"/>
-                <h5 className="sign-in-warning-message">Sign in to chat with sponsees</h5>
+                {!realtimeUser ? <h5 className="sign-in-warning-message">Sign in to chat with sponsees</h5> : <h5 className="sign-in-warning-message">Match with someone to begin chatting!</h5>}
                 <h5 className="sign-in-warning-message-mobile">Chat with sponsees!</h5>
               </div>
             )}
@@ -633,7 +628,10 @@ const Home = () => {
         </viewSponseesContext.Provider> : viewSettingsPage ?
         <viewSettingsPageContext.Provider value={{setViewSettingsPage, viewSettingsPage}}>
           <ViewSettingsPage />
-        </viewSettingsPageContext.Provider> : ""}
+        </viewSettingsPageContext.Provider> : messageModal ?
+        <messageModalContext.Provider value={{setMessageModal, messageModal, userToMessage}}>
+          <MessageModal />
+        </messageModalContext.Provider> : ""}
         </div>
   );
 };

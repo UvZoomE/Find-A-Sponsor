@@ -120,47 +120,26 @@ body {
 .sponsee-info {
   border: 1px solid #ccc;
   border-radius: 8px;
-  margin-bottom: 15px;
-  padding-right: 15px;
-  padding-left: 15px;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .first-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
+  gap: 20px;
 }
 
 .first-row img {
   border-radius: 50%;
+  height: 100px;
+  width: 100px;
 }
 
-.second-row {
-  margin-top: 10px;
-  justify-content: center;
-
-}
-
-.third-row {
-  margin-top: 10px;
-}
-
-.cancel-sponsee-button {
-  margin-right: auto;
-}
-
-.sponsee-info h5 {
-  margin: 0;
-}
-
-.cancel-icon {
-  color: red;
-  cursor: pointer;
-}
-
-.whatsapp-icon {
-  width: 150px;
-  height: auto;
+.messages-user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .person-message-and-icon {
